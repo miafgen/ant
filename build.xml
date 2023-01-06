@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project name="Install Ant in a batch-and-standalone-program-hostile environment" default="build">
+	<property file="build.properties" />
+	<property name="fetch.folder" value="temp" />
+	<property name="install.folder" value="install_modules_dynamic" />
+	<property name="compile.folder" value="dist" />
+		
+	<target name="clean" depends="clean-fetch, clean-install, clean-compile, clean-readme" />
+	<target name="build" depends="clean, fetch, install, compile, readme" />
+	
+	<target name="clean-fetch">
+		<delete dir="${fetch.folder}" />		
+	</target>
+
+	<target name="clean-install">		
+		<delete dir="${install.folder}" />
+	</target>
+
+	<target name="clean-compile">		
+		<delete dir="${compile.folder}" />
+	</target>
+
+	<target name="clean-readme">				
+		<delete file="README.md" />
+	</target>
+		
+	<target name="fetch" depends="clean-fetch">
+		<mkdir dir="${fetch.folder}" />
+		
+		<!-- ==== Downloading stuff from Adoptium ==== -->
+		<!-- JRE -->
+		<mkdir dir="${fetch.folder}/jdk" />
+		<get src="https://github.com/adoptium/temurin${adoptjava.majorversion}-binaries/releases/download/jdk${adoptjava.majorversion}${adoptjava.minoruversion}-${adoptjava.minorbversion}/OpenJDK8U-jdk_x64_windows_hotspot_${adoptjava.majorversion}${adoptjava.minoruversion}${adoptjava.minorbversion}.zip" dest="${fetch.folder}/jdk/jdk.zip" />
+		<unzip src="${fetch.folder}/jdk/jdk.zip" dest="${fetch.folder}/jdk" />
+		<move todir="${fetch.folder}/jdk">
+			<fileset dir="${fetch.folder}/jdk/jdk${adoptjava.majorversion}${adoptjava.minoruversion}-${adoptjava.minorbversion}"/>
+		</move>
+		<delete file="${fetch.folder}/jdk/jdk.zip" />
+		<delete dir="${fetch.folder}/jdk/jdk${adoptjava.majorversion}${adoptjava.minoruversion}-${adoptjava.minorbversion}" />
+		
+		<!-- ==== Downloading stuff from Apache ==== -->
+		<!-- Ant -->
+		<mkdir dir="${fetch.folder}/ant" />
+		<get src="https://dlcdn.apache.org/ant/binaries/apache-ant-${apacheant.version}-bin.zip" dest="${fetch.folder}/ant/ant.zip" />
+		<unzip src="${fetch.folder}/ant/ant.zip" dest="${fetch.folder}/ant" />
+		<move todir="${fetch.folder}/ant">
+			<fileset dir="${fetch.folder}/ant/apache-ant-${apacheant.version}"/>
+		</move>
+		<delete file="${fetch.folder}/ant/ant.zip" />
+		<delete dir="${fetch.folder}/ant/apache-ant-${apacheant.version}" />
+		<!--<delete dir="${fetch.folder}/ant/manual" />-->
+	</target>
+	
+	<target name="install" depends="clean-install">
+		<mkdir dir="${install.folder}" />
+		
+		<copy todir="${install.folder}">
+			<fileset dir="${fetch.folder}"/>
+		</copy>
+	</target>
+	
+	<target name="compile" depends="clean-compile">
+		<mkdir dir="${compile.folder}" />
+		
+		<exec executable="makensis.exe">
+			<arg value="/DVERSION=${buildversion}"/>			
+			<arg value="resources\\ant.nsi"/>
+		</exec>		
+	</target>
+
+	<target name="readme" depends="clean-readme">
+		<copy file="resources/README.md.template" tofile="README.md"/>
+		<replace file="README.md" token="{{version}}" value="${buildversion}" />
+	</target>
+	
+</project>
