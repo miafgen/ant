@@ -1,4 +1,4 @@
-# Windows Installer for Ant 1.9.16
+# Windows Installer for Ant 1.10.14
 This installer is the right choice in situations where only installed programms can be executed (and/or if batch files are disabled by a security policy). 
 
 Following components are installed using this installer:

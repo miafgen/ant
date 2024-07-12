@@ -6,7 +6,8 @@
 	<property name="compile.folder" value="dist" />
 		
 	<target name="clean" depends="clean-fetch, clean-install, clean-compile, clean-readme" />
-	<target name="build" depends="clean, fetch, install, compile, readme" />
+	<target name="build" depends="clean, fetch, install, compile, readme, housekeep" />
+    <target name="housekeep" depends="clean-fetch, clean-install" />
 	
 	<target name="clean-fetch">
 		<delete dir="${fetch.folder}" />		
@@ -71,6 +72,6 @@
 	<target name="readme" depends="clean-readme">
 		<copy file="resources/README.md.template" tofile="README.md"/>
 		<replace file="README.md" token="{{version}}" value="${buildversion}" />
-	</target>
+	</target>       
 	
 </project>

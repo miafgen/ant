@@ -79,7 +79,7 @@ Section "Base (Required)" sec1
 			
 	;== Adapt launcher config file ==	
 	ClearErrors
-	FileOpen $0 `$INSTDIR\bin\ant_.exe.ini` w
+	FileOpen $0 `$INSTDIR\bin\tick.exe.ini` w
 	IfErrors done
 	FileWrite $0 `$\"$INSTDIR\jdk\bin\java.exe$\" -classpath $\"$INSTDIR\lib\ant-launcher.jar$\" $\"-Dant.home=$INSTDIR$\" org.apache.tools.ant.launch.Launcher {{arguments}}$\r$\n`	
 	FileClose $0
